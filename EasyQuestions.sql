@@ -2,7 +2,7 @@
 SQL Questions
 
 
-01. https://datalemur.com/questions/sql-histogram-tweets
+-- 01. https://datalemur.com/questions/sql-histogram-tweets
 
 with cte as(
 select user_id,count(msg) as cnt
