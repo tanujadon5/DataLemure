@@ -1,2 +1,2 @@
-# DataLemure
+# DataLemur
 SQL Questions
