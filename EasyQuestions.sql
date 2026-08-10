@@ -23,3 +23,12 @@ where skill IN ('Python', 'Tableau', 'PostgreSQL')
 group by candidate_id
 having count(skill) = 3
 
+
+-03. https://datalemur.com/questions/sql-page-with-no-likes
+
+select p.page_id
+from pages p
+left join page_likes pl
+on p.page_id = pl.page_id
+where pl.page_id is null
+
