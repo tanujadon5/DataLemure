@@ -1,0 +1,52 @@
+
+https://datapathsala.com/problems/multi-step-funnel-dropoff?difficulty=hard
+
+Multi-Step Funnel Drop Off
+
+user_events
+     ↓
+"Did this user follow the funnel?"
+     ↓
+users_reached
+     ↓
+LAG(users_reached)
+     ↓
+previous_users
+     ↓
+dropoff_rate
+
+
+with cte as(
+    select event_name, count(user_id) as current_users
+    from user_events
+    group by event_name
+    -- y event_name and current_users pata chala yaha se
+),
+cte2 as (
+select event_name, current_users,
+
+-- order by hmesha page_view-> add_to_cart -> checkout-> purchase,
+-- is order me krna h qki mjhe previous order chahie isi order me
+-- page_view     → 1 → previous = NULL
+-- add_to_cart   → 2 → previous = page_view
+-- checkout      → 3 → previous = add_to_cart
+-- purchase      → 4 → previous = checkout
+
+LAG(current_users) OVER( ORDER BY 
+CASE event_name
+WHEN 'page_view' THEN 1
+WHEN 'add_to_cart' THEN 2
+WHEN 'checkout' THEN 3
+WHEN 'purchase' THEN 4
+END
+)
+as  previous_users
+from cte
+)
+select event_name as step,
+current_users as users_reached,
+ROUND(
+        (1 - current_users / previous_users) * 100,
+        1
+    ) AS dropoff_rate
+FROM cte2;
